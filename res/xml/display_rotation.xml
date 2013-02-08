@@ -18,9 +18,12 @@
         android:title="@string/display_rotation_title"
         xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
 
-    <CheckBoxPreference
+    <ListPreference
         android:key="accelerometer"
-        android:title="@string/accelerometer_title" />
+        android:dialogTitle="@string/accelerometer_title"
+        android:title="@string/accelerometer_title"
+        android:entries="@array/entries_accelerometer"
+        android:entryValues="@array/values_accelerometer" />
     <PreferenceCategory
         android:key="display_rotation_category"
         android:title="@string/display_rotation_category_title" />

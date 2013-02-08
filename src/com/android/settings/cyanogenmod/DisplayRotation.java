@@ -20,10 +20,12 @@ import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.provider.Settings.System;
 
 import com.android.internal.view.RotationPolicy;
 import com.android.settings.R;
@@ -38,7 +40,7 @@ public class DisplayRotation extends SettingsPreferenceFragment implements OnPre
     private static final String ROTATION_180_PREF = "display_rotation_180";
     private static final String ROTATION_270_PREF = "display_rotation_270";
 
-    private CheckBoxPreference mAccelerometer;
+    private ListPreference mAccelerometer;
     private CheckBoxPreference mRotation0Pref;
     private CheckBoxPreference mRotation90Pref;
     private CheckBoxPreference mRotation180Pref;
@@ -67,9 +69,9 @@ public class DisplayRotation extends SettingsPreferenceFragment implements OnPre
 
         PreferenceScreen prefSet = getPreferenceScreen();
 
-        mAccelerometer = (CheckBoxPreference) findPreference(KEY_ACCELEROMETER);
-        mAccelerometer.setPersistent(false);
-
+        mAccelerometer = (ListPreference) findPreference(KEY_ACCELEROMETER);
+        mAccelerometer.setOnPreferenceChangeListener(this);
+        
         if (hasRotationLock) {
                 mAccelerometer.setEnabled(false);
         }
@@ -110,17 +112,34 @@ public class DisplayRotation extends SettingsPreferenceFragment implements OnPre
     }
 
     private void updateAccelerometerRotationCheckbox() {
-        mAccelerometer.setChecked(!RotationPolicy.isRotationLocked(getActivity()));
+        mAccelerometer.setValue(
+            !RotationPolicy.isRotationLocked(getActivity()) && 
+                Settings.System.getInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.ACCELEROMETER_LOCKSCREEN, 0) == 1 ? "2" : 
+
+                !RotationPolicy.isRotationLocked(getActivity()) ? "1" : "0"
+        );
+
+        mRotation0Pref.setEnabled( !RotationPolicy.isRotationLocked(getActivity()) );
+        mRotation90Pref.setEnabled( !RotationPolicy.isRotationLocked(getActivity()) );
+        mRotation180Pref.setEnabled( !RotationPolicy.isRotationLocked(getActivity()) );
+        mRotation270Pref.setEnabled( !RotationPolicy.isRotationLocked(getActivity()) );
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference == mAccelerometer) {
+            int value = Integer.parseInt((String) newValue);
+
+            RotationPolicy.setRotationLockForAccessibility(getActivity(), value > 0 ? false : true);
+            Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.ACCELEROMETER_LOCKSCREEN, value > 1 ? 1 : 0);
+
+            return true;
+        }
+
         return false;
     }
 
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference == mAccelerometer) {
-            RotationPolicy.setRotationLockForAccessibility(getActivity(), !mAccelerometer.isChecked());
-        } else if (preference == mRotation0Pref ||
+        if (preference == mRotation0Pref ||
                 preference == mRotation90Pref ||
                 preference == mRotation180Pref ||
                 preference == mRotation270Pref) {
