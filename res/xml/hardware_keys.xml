@@ -103,6 +103,13 @@
             android:persistent="false"
             android:defaultValue="false" />
 
+       <CheckBoxPreference
+            android:key="hardware_keys_disable_power"
+            android:title="@string/hardware_keys_disable_power_title"
+            android:summary="@string/hardware_keys_disable_power_summary"
+            android:persistent="false"
+            android:defaultValue="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -4896,6 +4896,9 @@
     <string name="hardware_keys_show_overflow_summary">Display the 3-dot overflow menu button within apps</string>
     <string name="hardware_keys_show_overflow_toast_enable">The action overflow button may not be visible until apps are restarted</string>
     <string name="hardware_keys_show_overflow_toast_disable">The action overflow button may not be hidden until apps are restarted</string>
+    <string name="hardware_keys_disable_power_title">Disable power button</string>
+    <string name="hardware_keys_disable_power_summary">Disable the power button while the screen is turned off</string>
+    <string name="hardware_keys_disable_power_toast">Warning! Unless you have another key active for power, you will not be able to turn your screen back on</string>
     <string name="hardware_keys_action_nothing">No action</string>
     <string name="hardware_keys_action_menu">Open/close menu</string>
     <string name="hardware_keys_action_app_switch">Recent apps switcher</string>

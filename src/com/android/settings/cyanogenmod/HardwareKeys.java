@@ -41,6 +41,7 @@ public class HardwareKeys extends SettingsPreferenceFragment implements OnPrefer
     private static final String HARDWARE_KEYS_APP_SWITCH_PRESS = "hardware_keys_app_switch_press";
     private static final String HARDWARE_KEYS_APP_SWITCH_LONG_PRESS = "hardware_keys_app_switch_long_press";
     private static final String HARDWARE_KEYS_SHOW_OVERFLOW = "hardware_keys_show_overflow";
+    private static final String HARDWARE_KEYS_DISABLE_POWER = "hardware_keys_disable_power";
 
     // Available custom actions to perform on a key press.
     // Must match values for KEY_HOME_LONG_PRESS_ACTION in:
@@ -69,6 +70,7 @@ public class HardwareKeys extends SettingsPreferenceFragment implements OnPrefer
     private ListPreference mAppSwitchPressAction;
     private ListPreference mAppSwitchLongPressAction;
     private CheckBoxPreference mShowActionOverflow;
+    private CheckBoxPreference mDisablePower;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,8 @@ public class HardwareKeys extends SettingsPreferenceFragment implements OnPrefer
                 HARDWARE_KEYS_APP_SWITCH_LONG_PRESS);
         mShowActionOverflow = (CheckBoxPreference) prefSet.findPreference(
                 HARDWARE_KEYS_SHOW_OVERFLOW);
+        mDisablePower = (CheckBoxPreference) prefSet.findPreference(
+                HARDWARE_KEYS_DISABLE_POWER);
         PreferenceCategory bindingsCategory = (PreferenceCategory) prefSet.findPreference(
                 HARDWARE_KEYS_CATEGORY_BINDINGS);
 
@@ -184,6 +188,9 @@ public class HardwareKeys extends SettingsPreferenceFragment implements OnPrefer
         mShowActionOverflow.setChecked((Settings.System.getInt(getActivity().
                 getApplicationContext().getContentResolver(),
                 Settings.System.UI_FORCE_OVERFLOW_BUTTON, 0) == 1));
+        mDisablePower.setChecked((Settings.System.getInt(getActivity().
+                getApplicationContext().getContentResolver(),
+                Settings.System.DISABLE_POWER_BUTTON, 0) == 1));
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -265,7 +272,15 @@ public class HardwareKeys extends SettingsPreferenceFragment implements OnPrefer
                         Toast.LENGTH_LONG).show();
             }
             return true;
+
+        } else if (preference == mDisablePower) {
+            Settings.System.putInt(getContentResolver(), Settings.System.DISABLE_POWER_BUTTON, mDisablePower.isChecked() ? 1 : 0);
+
+            if (mDisablePower.isChecked()) {
+                Toast.makeText(getActivity(), R.string.hardware_keys_disable_power_toast, Toast.LENGTH_LONG).show();
+            }
         }
+
         return false;
     }
 }
