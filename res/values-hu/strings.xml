@@ -2396,6 +2396,11 @@
     <string name="power_menu_reboot_title">Újraindítás</string>
     <string name="power_menu_screenshot_title">Képernyőmentés</string>
     <string name="power_menu_expanded_desktop">Képernyő kiterjesztés</string>
+    <string name="expanded_desktop_summary_status_bar">Értesítési sávval</string>
+    <string name="expanded_desktop_summary_no_status_bar">Értesítési sáv nélkül</string>
+    <string name="expanded_desktop_disabled">Kikapcsolva</string>
+    <string name="expanded_desktop_status_bar">Értesítési sáv megjelenítése</string>
+    <string name="expanded_desktop_no_status_bar">Értesítési sáv elrejtése</string>
     <string name="power_menu_profiles_title">Profil választó</string>
     <string name="power_menu_airplane_title">Repülőgép üzemmód</string>
     <string name="power_menu_user_title">Felhasználóváltás</string>
@@ -2501,6 +2506,7 @@
     <string name="title_tile_nfc">NFC</string>
     <string name="title_tile_screen_timeout">Képernyő időkorlátja</string>
     <string name="title_tile_usb_tether">USB megosztás</string>
+    <string name="title_tile_quiet_hours">Csendes órák</string>
 
     <string name="title_dynamic_tiles">Dinamikus lapok</string>
     <string name="dynamic_tiles_note_title">Megjegyzés</string>
@@ -2561,6 +2567,14 @@
     <string name="lockscreen_background_color_fill">Szín kiválasztása</string>
     <string name="lockscreen_background_custom_image">Háttérkép kiválasztása</string>
     <string name="lockscreen_background_default_wallpaper">Alapértelmezett háttérkép</string>
+
+    <!-- Safe headset volume restore checkbox -->
+    <string name="safe_headset_volume_title">Biztonságos hangerő</string>
+    <string name="safe_headset_volume_summary">Nagy hangerő megakadályozása fülhallgató csatlakoztatásakor</string>
+
+    <!-- Waiver -->
+    <string name="cyanogenmod_waiver_title">Jogi felelősség átvállalása</string>
+    <string name="cyanogenmod_waiver_body">A beállítás módosítása halláskárosodáshoz vezethet.\n\nAz \"OK\" gombbal Ön elfogadja ezt a figyelmeztetést és ezzel felmenti a CyanogenMod csapatot és minden közreműködőt az esetleges jogi kötelezettségek alól.</string>
 
     <!-- **** CYANOGENMOD ADDITIONS END **** -->
 
