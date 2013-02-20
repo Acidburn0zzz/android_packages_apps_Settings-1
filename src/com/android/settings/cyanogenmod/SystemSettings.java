@@ -22,11 +22,14 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.IWindowManager;
+import android.provider.Settings;
+import android.provider.Settings.System;
 
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
@@ -34,13 +37,16 @@ import com.android.settings.SettingsPreferenceFragment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SystemSettings extends SettingsPreferenceFragment {
+public class SystemSettings extends SettingsPreferenceFragment implements Preference.OnPreferenceChangeListener {
     private static final String TAG = "SystemSettings";
 
     private static final String KEY_NOTIFICATION_PULSE = "notification_pulse";
     private static final String KEY_BATTERY_LIGHT = "battery_light";
     private static final String KEY_HARDWARE_KEYS = "hardware_keys";
     private static final String KEY_NAVIGATION_BAR = "navigation_bar";
+    private static final String KEY_NAVIGATION_BAR_CATEGORY = "navigation_bar_category";
+    private static final String KEY_NAVIGATION_BAR_TOGGLE = "navigation_bar_toggle";
+    private static final String KEY_NAVIGATION_BAR_HIDABLE = "navigation_bar_hidable";
     private static final String KEY_LOCK_CLOCK = "lock_clock";
     private static final String KEY_STATUS_BAR = "status_bar";
     private static final String KEY_QUICK_SETTINGS = "quick_settings_panel";
@@ -50,6 +56,10 @@ public class SystemSettings extends SettingsPreferenceFragment {
     private PreferenceScreen mNotificationPulse;
     private PreferenceScreen mBatteryPulse;
     private boolean mIsPrimary;
+
+    private CheckBoxPreference mNavBarToggle;
+    private CheckBoxPreference mNavBarHidable;
+    private PreferenceScreen mNavBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,29 +83,47 @@ public class SystemSettings extends SettingsPreferenceFragment {
                 }
             }
 
-            // Only show the hardware keys config on a device that does not have a navbar
-            // and the navigation bar config on phones that has a navigation bar
-            boolean removeKeys = false;
-            boolean removeNavbar = false;
             IWindowManager windowManager = IWindowManager.Stub.asInterface(
                     ServiceManager.getService(Context.WINDOW_SERVICE));
+
+            boolean configNavBar = getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
+            boolean hasNavigationBar = false;
+            boolean hasSystemNavBar = false;
+
             try {
-                if (windowManager.hasNavigationBar()) {
-                    removeKeys = true;
-                } else {
-                    removeNavbar = true;
-                }
-            } catch (RemoteException e) {
-                // Do nothing
-            }
+                hasSystemNavBar = windowManager.hasSystemNavBar();
+                hasNavigationBar = windowManager.hasNavigationBar();
+
+            } catch (RemoteException e) {}
 
             // Act on the above
-            if (removeKeys) {
+            if (configNavBar || hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_HARDWARE_KEYS));
             }
-            if (removeNavbar) {
+            if (hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
+                prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_HIDABLE));
+                prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_TOGGLE));
+                prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_CATEGORY));
+
+            } else {
+                mNavBar = (PreferenceScreen) findPreference(KEY_NAVIGATION_BAR);
+                mNavBarToggle = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_TOGGLE);
+                mNavBarHidable = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_HIDABLE);
+
+                mNavBarToggle.setChecked(
+                    Settings.System.getInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.NAV_BAR_VISABLE, hasNavigationBar ? 1 : 0) == 1
+                );
+                
+                mNavBarHidable.setChecked(
+                    Settings.System.getInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.NAV_BAR_HIDABLE, hasNavigationBar ? 1 : 0) == 1
+                );
+
+                if (!hasNavigationBar) {
+                    mNavBar.setEnabled(false);
+                }
             }
+
         } else {
             // Secondary user is logged in, remove all primary user specific preferences
             prefScreen.removePreference(findPreference(KEY_BATTERY_LIGHT));
@@ -174,5 +202,24 @@ public class SystemSettings extends SettingsPreferenceFragment {
             }
         }
         return false;
+    }
+
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        return false;
+    }
+
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (preference == mNavBarToggle) {
+            Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.NAV_BAR_VISABLE, mNavBarToggle.isChecked() ? 1 : 0);
+
+            return true;
+
+        } else if (preference == mNavBarHidable) {
+            Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(), Settings.System.NAV_BAR_HIDABLE, mNavBarHidable.isChecked() ? 1 : 0);
+
+            return true;
+        }
+
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }
