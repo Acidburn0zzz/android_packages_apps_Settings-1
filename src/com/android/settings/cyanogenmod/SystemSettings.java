@@ -44,6 +44,7 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
     private static final String KEY_BATTERY_LIGHT = "battery_light";
     private static final String KEY_HARDWARE_KEYS = "hardware_keys";
     private static final String KEY_NAVIGATION_BAR = "navigation_bar";
+    private static final String KEY_NAVIGATION_RING = "navigation_ring";
     private static final String KEY_NAVIGATION_BAR_CATEGORY = "navigation_bar_category";
     private static final String KEY_NAVIGATION_BAR_TOGGLE = "navigation_bar_toggle";
     private static final String KEY_NAVIGATION_BAR_HIDABLE = "navigation_bar_hidable";
@@ -60,6 +61,7 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
     private CheckBoxPreference mNavBarToggle;
     private CheckBoxPreference mNavBarHidable;
     private PreferenceScreen mNavBar;
+    private PreferenceScreen mNavRing;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,14 +102,17 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
             if (configNavBar || hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_HARDWARE_KEYS));
             }
+
             if (hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_HIDABLE));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_TOGGLE));
+                prefScreen.removePreference(findPreference(KEY_NAVIGATION_RING));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_CATEGORY));
 
             } else {
                 mNavBar = (PreferenceScreen) findPreference(KEY_NAVIGATION_BAR);
+                mNavRing = (PreferenceScreen) findPreference(KEY_NAVIGATION_RING);
                 mNavBarToggle = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_TOGGLE);
                 mNavBarHidable = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_HIDABLE);
 
@@ -121,7 +126,8 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
 
                 if (!hasNavigationBar) {
                     mNavBar.setEnabled(false);
-                }
+                    mNavRing.setEnabled(false);
+                } 
             }
 
         } else {
@@ -129,6 +135,10 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
             prefScreen.removePreference(findPreference(KEY_BATTERY_LIGHT));
             prefScreen.removePreference(findPreference(KEY_HARDWARE_KEYS));
             prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
+            prefScreen.removePreference(findPreference(KEY_NAVIGATION_RING));
+            prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_CATEGORY));
+            prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_HIDABLE));
+            prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_TOGGLE));
             prefScreen.removePreference(findPreference(KEY_STATUS_BAR));
             prefScreen.removePreference(findPreference(KEY_QUICK_SETTINGS));
             prefScreen.removePreference(findPreference(KEY_POWER_MENU));
