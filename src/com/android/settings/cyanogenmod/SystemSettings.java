@@ -53,9 +53,11 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
     private static final String KEY_QUICK_SETTINGS = "quick_settings_panel";
     private static final String KEY_NOTIFICATION_DRAWER = "notification_drawer";
     private static final String KEY_POWER_MENU = "power_menu";
+    private static final String KEY_PIE_CONTROL = "pie_control";
 
     private PreferenceScreen mNotificationPulse;
     private PreferenceScreen mBatteryPulse;
+    private PreferenceScreen mPieControl;
     private boolean mIsPrimary;
 
     private CheckBoxPreference mNavBarToggle;
@@ -69,6 +71,19 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
 
         addPreferencesFromResource(R.xml.system_settings);
         PreferenceScreen prefScreen = getPreferenceScreen();
+
+        IWindowManager windowManager = IWindowManager.Stub.asInterface(
+                ServiceManager.getService(Context.WINDOW_SERVICE));
+
+        boolean configNavBar = getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
+        boolean hasNavigationBar = false;
+        boolean hasSystemNavBar = false;
+
+        try {
+            hasSystemNavBar = windowManager.hasSystemNavBar();
+            hasNavigationBar = windowManager.hasNavigationBar();
+
+        } catch (RemoteException e) {}
 
         // Determine which user is logged in
         mIsPrimary = UserHandle.myUserId() == UserHandle.USER_OWNER;
@@ -85,24 +100,10 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
                 }
             }
 
-            IWindowManager windowManager = IWindowManager.Stub.asInterface(
-                    ServiceManager.getService(Context.WINDOW_SERVICE));
-
-            boolean configNavBar = getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
-            boolean hasNavigationBar = false;
-            boolean hasSystemNavBar = false;
-
-            try {
-                hasSystemNavBar = windowManager.hasSystemNavBar();
-                hasNavigationBar = windowManager.hasNavigationBar();
-
-            } catch (RemoteException e) {}
-
             // Act on the above
             if (configNavBar || hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_HARDWARE_KEYS));
             }
-
             if (hasSystemNavBar) {
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_HIDABLE));
@@ -151,13 +152,43 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
         if (mNotificationPulse != null) {
             if (!getResources().getBoolean(com.android.internal.R.bool.config_intrusiveNotificationLed)) {
                 prefScreen.removePreference(mNotificationPulse);
-            } else {
-                updateLightPulseDescription();
+                mNotificationPulse = null;
             }
+        }
+
+        // Pie controls
+        mPieControl = (PreferenceScreen) findPreference(KEY_PIE_CONTROL);
+        if (mPieControl != null && !hasNavigationBar) {
+            // Remove on devices without a navbar to start with
+            mPieControl.setEnabled(false);
+            mPieControl = null;
         }
 
         // Don't display the lock clock preference if its not installed
         removePreferenceIfPackageNotInstalled(findPreference(KEY_LOCK_CLOCK));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // All users
+        if (mNotificationPulse != null) {
+            updateLightPulseDescription();
+        }
+        if (mPieControl != null) {
+            updatePieControlDescription();
+        }
+
+        // Primary user only
+        if (mIsPrimary && mBatteryPulse != null) {
+            updateBatteryPulseDescription();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     private void updateLightPulseDescription() {
@@ -178,22 +209,13 @@ public class SystemSettings extends SettingsPreferenceFragment implements Prefer
         }
      }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // All users
-        updateLightPulseDescription();
-
-        // Primary user only
-        if (mIsPrimary) {
-            updateBatteryPulseDescription();
+    private void updatePieControlDescription() {
+        if (Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.PIE_CONTROLS, 0) == 1) {
+            mPieControl.setSummary(getString(R.string.pie_control_enabled));
+        } else {
+            mPieControl.setSummary(getString(R.string.pie_control_disabled));
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     private boolean removePreferenceIfPackageNotInstalled(Preference preference) {
