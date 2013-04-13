@@ -136,6 +136,21 @@
             android:name=".cyanogenmod.superuser.SuReceiver"
             android:permission="android.permission.REPORT_SUPERUSER" />
 
+        <receiver
+            android:name=".cyanogenmod.superuser.PackageChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <data android:scheme="package" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <data android:scheme="package" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
 
         <!-- Settings -->
 
@@ -1530,6 +1545,19 @@
         <activity android:name=".cyanogenmod.PowerWidget" />
 
         <activity android:name=".cyanogenmod.SystemSettings" />
+        <activity android:name="Settings$SystemSettingsActivity"
+                android:label="@string/system_settings_title"
+                android:taskAffinity=""
+                android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.cyanogenmod.SystemSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/system_settings" />
+        </activity>
 
         <activity android:name=".cyanogenmod.PerformanceSettings" />
 

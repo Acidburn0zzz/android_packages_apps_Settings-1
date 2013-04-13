@@ -1448,6 +1448,10 @@
     <string name="wifi_security_eap">802.1x EAP</string>
 
 
+    <string name="wifi_ibss_freq_title">Channel / Frequency</string>
+    <string name="wifi_channel">Channel</string>
+    <string name="wifi_mhz">MHz</string>
+
     <!-- Button label to connect to a Wi-Fi network -->
     <string name="wifi_connect">Connect</string>
     <!-- Failured notification for connect -->
@@ -5091,12 +5095,14 @@
     <string name="title_tile_usb_tether">USB Tether</string>
     <string name="title_tile_quiet_hours">Quiet hours</string>
     <string name="title_tile_volume">Volume</string>
+    <string name="title_tile_expanded_desktop">Expanded desktop</string>
 
     <string name="title_dynamic_tiles">Dynamic tiles</string>
     <string name="dynamic_tiles_note_title">Note</string>
     <string name="dynamic_tiles_note_summary">Dynamic tiles are not always visible and will only show up if triggered by a system event</string>
     <string name="title_dynamic_alarm">Alarm clock</string>
     <string name="title_dynamic_bugreport">Bug report</string>
+    <string name="title_dynamic_dock_battery">Dock battery</string>
     <string name="title_dynamic_ime">IME changer</string>
     <string name="title_dynamic_usbtether">USB Tether</string>
     <string name="title_dynamic_wifi">Wi-Fi display</string>
@@ -5207,11 +5213,10 @@
     <string name="navring_action_google_now">Google Now</string>
     <string name="navring_choose_action_title">Choose action</string>
 
-    <!-- Quick/Pie Control #CM -->
+    <!-- Pie controls -->
     <string name="pie_control_title">Pie controls</string>
-    <string name="pie_control_enabled">Enabled when Expanded desktop is active</string>
-    <string name="pie_control_disabled">Disabled</string>
-    <string name="pie_control_search_title">Show search button</string>
+    <string name="pie_control_enabled">Floating controls when Expanded desktop is enabled</string>
+    <string name="pie_control_disabled">Floating controls disabled</string>
     <string name="pie_control_size">Navigation key size</string>
     <string name="pie_control_trigger_positions">Trigger positions</string>
     <string name="pie_control_trigger_left">Left screen border</string>
@@ -5219,6 +5224,37 @@
     <string name="pie_control_trigger_right">Right screen border</string>
     <string name="pie_control_trigger_top">Top screen border</string>
     <string name="pie_control_trigger_top_summary">Only navigation will be displayed at top</string>
+
+    <!-- Stylus Gestures -->
+    <string name="gestures_settings_title">Stylus gestures</string>
+    <string name="category_spen_title">Stylus gestures</string>
+    <string name="enable_subcat_title">Stylus</string>
+    <string name="enable_spen_title_head">Enable stylus gestures</string>
+    <string name="enable_spen_summary_head">Launch custom actions with stylus button swipe gestures. Warning: apps will not be able to receive input fired by holding the stylus button</string>
+    <string name="gestures_subcat_title">Gestures</string>
+    <string name="gestures_left_spen_title_head">Left swipe</string>
+    <string name="gestures_left_spen_summary_head">Launch custom action on left swipe</string>
+    <string name="gestures_right_spen_title_head">Right swipe</string>
+    <string name="gestures_right_spen_summary_head">Launch custom action on right swipe</string>
+    <string name="gestures_up_spen_title_head">Up swipe</string>
+    <string name="gestures_up_spen_summary_head">Launch custom action on up swipe</string>
+    <string name="gestures_down_spen_title_head">Down swipe</string>
+    <string name="gestures_down_spen_summary_head">Launch custom action on down swipe</string>
+    <string name="gestures_long_spen_title_head">Long press</string>
+    <string name="gestures_long_spen_summary_head">Launch custom action on long press</string>
+    <string name="gestures_double_spen_title_head">Double tap</string>
+    <string name="gestures_double_spen_summary_head">Launch custom action on double tap</string>
+
+    <!-- Gestures Options -->
+    <string name="gestures_action_empty">No action</string>
+    <string name="gestures_action_home">Emulate home key</string>
+    <string name="gestures_action_back">Emulate back key</string>
+    <string name="gestures_action_menu">Emulate menu key</string>
+    <string name="gestures_action_search">Invoke search</string>
+    <string name="gestures_action_recent">Recent apps</string>
+
+    <!-- stylus gestures support -->
+    <string name="stylus_app_not_installed">%s is not installed</string>
 
     <!-- **** CYANOGENMOD ADDITIONS END **** -->
 </resources>
